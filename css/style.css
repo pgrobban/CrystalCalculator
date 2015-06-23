@@ -1,0 +1,80 @@
+/* 
+    Created on : 2015-jun-21, 12:39:46
+    Author     : pgrobban
+*/
+
+body {
+    margin: 0 auto;
+    font-size: 14px;
+    line-height: 140%;
+
+    max-width: 700px;
+    margin: 1em auto;
+}
+
+p, h3 {
+    margin: 0.5em;
+}
+
+.author {
+    font-style: italic;
+}
+
+.panel-title {
+    font-size: 1.2em;
+    line-height: 160%;
+}
+
+table img {
+    width: 100px;
+}
+
+
+td {
+    padding: 0.3em;
+}
+
+caption {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+
+.treasureIconColumn {
+    width: 100px;
+}
+.treasureColumn {
+    width: 300px;
+}
+td select {
+    width: 100%;
+}
+
+th {
+    background-color: #eee;
+}
+
+tr {
+    padding: 0.5em;
+}
+
+.panel-heading {
+    color: white;
+}
+
+.pull-left {
+    float: left !important;
+}
+.pull-right {
+    float: right !important;
+}
+
+#resultsTable {
+    font-size: 1.2em;
+    background: beige;
+    margin: 1em 0;
+}
+
+.results {
+    width: 100px;
+}
