@@ -61,9 +61,9 @@ oApp.fnGenerateTreasureTables = function () {
  * @returns {undefined}
  */
 oApp.fnGenerateTreasureTable = function (sTableID, aTreasures) {
-    $("#" + sTableID).append("<th class='col-md-1'></th>"); // icon
-    $("#" + sTableID).append("<th class='col-md-2'>Name</th>");
-    $("#" + sTableID).append("<th class='col-md-2'>Level</th>");
+    $("#" + sTableID).append("<th class='col-xs-1'></th>"); // icon
+    $("#" + sTableID).append("<th class='col-xs-3'>Name</th>");
+    $("#" + sTableID).append("<th class='col-xs-3'>Level</th>");
 
     aTreasures.forEach(function (sTreasureName)
     {
@@ -89,7 +89,7 @@ oApp.fnGenerateTreasureRow = function (sTableID, sTreasureName, bGenerateDeleteB
     // Generate img src attribute. ugh, ugly. we have to escape apostrophes and we can't use colons for file names, so I replaced them with a dash
     var sImgSrc = oApp.getImgSrc(sTreasureName);
 
-    var eImg = $(sprintf("<img src='%s' alt='%s'/>", sImgSrc, sTreasureName));
+    var eImg = $(sprintf("<img class='img-responsive' src='%s' alt='%s'/>", sImgSrc, sTreasureName));
     var eIconTD = $("<td></td>");
     eIconTD.append(eImg);
     eTr.append(eIconTD);
@@ -316,7 +316,7 @@ oApp.fnGenerateUpgradeTableRow = function (sTreasureName, nCurrentLevel, nAverag
 
     var eIconTd = $("<td></td>");
     var sImgSrc = oApp.getImgSrc(sTreasureName);
-    var eImg = $("<img src='" + sImgSrc + "'/>");
+    var eImg = $("<img class='img-responsive' src='" + sImgSrc + "'/>");
     eIconTd.append(eImg);
     eTr.append(eIconTd);
 

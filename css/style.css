@@ -7,9 +7,21 @@ body {
     margin: 0 auto;
     font-size: 14px;
     line-height: 140%;
-
-    width: 700px;
     margin: 1em auto;
+}
+
+@media screen and (min-width: 700px) {
+    body { width: 700px; }
+}
+
+@media
+only screen and (-webkit-min-device-pixel-ratio : 1.5),
+only screen and (min-device-pixel-ratio : 1.5) {
+    body { font-size: 130%; }
+}
+
+h2 {
+    margin: 0.5em;
 }
 
 p, h3 {
@@ -24,13 +36,18 @@ p, h3 {
     background-repeat: no-repeat;
 }
 
+@media screen and (max-width: 700px) {
+    .author { padding: 1em; width: 100%; }
+}
+
+
 .panel-title {
     font-size: 1.2em;
     line-height: 160%;
 }
 
 table img {
-    width: 100px;
+    text-align: center;
 }
 
 
