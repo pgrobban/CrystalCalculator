@@ -18,6 +18,10 @@ p, h3 {
 
 .author {
     font-style: italic;
+    background-image: url("../img/Strawberry.png");
+    background-size: 80px;
+    background-position: right;
+    background-repeat: no-repeat;
 }
 
 .panel-title {
