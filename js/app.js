@@ -13,7 +13,7 @@
  * b = boolean
  * o = object
  * a = array
- * oa = object of arrays
+ * ao = array of objects
  * fn = function
  * e = jQuery element
  */
@@ -24,7 +24,7 @@ var oApp = {};
 $(document).ready(function () {
 
     oApp.oData = null;
-    oApp.oaPlayerTreasures = null;
+    oApp.aoPlayerTreasures = null;
 
     // fetch the data from the JSON file. When finished, start generating tables. 
     $.ajax({
@@ -65,7 +65,7 @@ oApp.fnGenerateTreasureTable = function (sTableID, aTreasures) {
     $("#" + sTableID).append("<th class='col-md-2'>Name</th>");
     $("#" + sTableID).append("<th class='col-md-2'>Level</th>");
 
-    aTreasures.forEach(function(sTreasureName)
+    aTreasures.forEach(function (sTreasureName)
     {
         oApp.fnGenerateTreasureRow(sTableID, sTreasureName, false);
     });
@@ -87,9 +87,9 @@ oApp.fnGenerateTreasureRow = function (sTableID, sTreasureName, bGenerateDeleteB
     var eTr = $("<tr class='treasureRow'></tr>");
 
     // Generate img src attribute. ugh, ugly. we have to escape apostrophes and we can't use colons for file names, so I replaced them with a dash
-    var sImgSrc = sTreasureName.replace("'", "&#39;").replace(":", "-") + ".png";
+    var sImgSrc = oApp.getImgSrc(sTreasureName);
 
-    var eImg = $(sprintf("<img src='img/%s' alt='%s'/>", sImgSrc, sTreasureName));
+    var eImg = $(sprintf("<img src='%s' alt='%s'/>", sImgSrc, sTreasureName));
     var eIconTD = $("<td></td>");
     eIconTD.append(eImg);
     eTr.append(eIconTD);
@@ -122,6 +122,11 @@ oApp.fnGenerateTreasureRow = function (sTableID, sTreasureName, bGenerateDeleteB
     $("#" + sTableID).append(eTr);
 };
 
+oApp.getImgSrc = function (sTreasureName)
+{
+    return sprintf("img/%s.png", sTreasureName.replace("'", "&#39;").replace(":", "-"));
+}
+
 /**
  * Dynamically populate the certificateSelect <select> tag and generate treasure
  * data to aApp.oData. Generate a table row when the user has selected a
@@ -147,7 +152,7 @@ oApp.fnGenerateCertificatesTable = function () {
         {
             var sTreasureName = $(this).val();
             oApp.oData["certificateTreasures"][sTreasureName] = {};
-            oApp.oData["certificateTreasures"][sTreasureName].crystalsPerDay = 1;
+            oApp.oData["certificateTreasures"][sTreasureName].crystals = 1;
             // generate chance array
             var aCrystalChance = [];
             // level 0 to 8 are always +1% chance, beginning at 40% for 0M Certificate. 
@@ -160,7 +165,7 @@ oApp.fnGenerateCertificatesTable = function () {
         }
     });
     // 100M is in the data file. special because it's +2% chance from 90M, although we could generate it here as well
-    
+
     // when the user has selected a certificate treasure, generate a table row in the certificateTreasureTable table
     $("#certificateSelect").on('change', function () {
         $("#certificateTreasureTable tbody").empty();
@@ -181,7 +186,7 @@ oApp.fnGenerateChestTreasuresTable = function ()
     // populate select
     for (var sTreasureName in oApp.oData.chestTreasures)
         $("#chestTreasureSelect").append(sprintf("<option>%s</option>", sTreasureName));
-    
+
     // generate table row
     $("#chestTreasureSelect").on("change", function () {
         oApp.fnGenerateTreasureRow("chestTreasuresTable", $("#chestTreasureSelect").val(), true);
@@ -197,7 +202,7 @@ oApp.fnGenerateChestTreasuresTable = function ()
  */
 oApp.fnRecalculate = function () {
 
-    var nMaxCrystals = 0, nAvgCrystals = 0;
+    var nMaxCrystals = 0, nAvgCrystalsPerDay = 0;
 
     $.each($(".treasureRow"), function (index, value)
     {
@@ -206,15 +211,18 @@ oApp.fnRecalculate = function () {
 
         if (nLevel > -1)
         {
-            var nCrystalsPerDay = oApp.findTreasureByName(sTreasureName).crystalsPerDay;
-            nMaxCrystals += nCrystalsPerDay;
-            var chanceForCurrentLevel = oApp.findTreasureByName(sTreasureName).chance[nLevel] / 100;
-            nAvgCrystals += nCrystalsPerDay * chanceForCurrentLevel;
+            var nCrystals = oApp.fnFindTreasureByName(sTreasureName).crystals;
+            nMaxCrystals += nCrystals;
+            var chanceForCurrentLevel = oApp.fnFindTreasureByName(sTreasureName).chance[nLevel] / 100;
+            nAvgCrystalsPerDay += nCrystals * chanceForCurrentLevel;
         }
     });
 
     $("#maxCrystals").text(nMaxCrystals);
-    $("#avgCrystals").text(Math.round(nAvgCrystals * 100) / 100);
+    $("#avgCrystals").text(Math.round(nAvgCrystalsPerDay * 100) / 100);
+
+    oApp.fnMakePlayerTreasureDB();
+    oApp.fnDecideNBestTreasuresForPlayerToUpgrade(5);
 };
 
 /**
@@ -224,7 +232,7 @@ oApp.fnRecalculate = function () {
  * @param {type} sTreasureName
  * @returns {Object}
  */
-oApp.findTreasureByName = function (sTreasureName) {
+oApp.fnFindTreasureByName = function (sTreasureName) {
     for (var sTreasureGroup in oApp.oData)
     {
         for (var sTreasure in oApp.oData[sTreasureGroup])
@@ -234,6 +242,89 @@ oApp.findTreasureByName = function (sTreasureName) {
         }
     }
     return null;
+};
+
+
+// beta stuff
+
+/**
+ * Generate an array aApp.aoPlayerTreasures containing all of the player's treasures
+ */
+oApp.fnMakePlayerTreasureDB = function ()
+{
+    oApp.aoPlayerTreasures = [];
+    $(".treasureRow").each(function (index, value)
+    {
+        var nLevel = $(value).find("select").val();
+        if (nLevel > -1)
+        {
+            var oTreasure = {};
+            oTreasure.nLevel = parseInt(nLevel);
+            oTreasure.sTreasureName = $(value).find("td").eq(1).text();
+
+            var nCrystals = oApp.fnFindTreasureByName(oTreasure.sTreasureName).crystals;
+            oTreasure.nCrystals = nCrystals;
+            var nChanceForCurrentLevel = oApp.fnFindTreasureByName(oTreasure.sTreasureName).chance[nLevel] / 100;
+            oTreasure.nChanceForCurrentLevel = nChanceForCurrentLevel;
+            oTreasure.nAverageCrystalsPerDay = nCrystals * nChanceForCurrentLevel;
+            oApp.aoPlayerTreasures.push(oTreasure);
+        }
+    });
+}
+
+oApp.fnDecideNBestTreasuresForPlayerToUpgrade = function (nHowMany)
+{
+    var aoPlayerTreasuresCopy = oApp.aoPlayerTreasures.slice();
+    // first remove all treasures of level +9 cus we can't upgrade them
+    for (var i = aoPlayerTreasuresCopy.length - 1; i >= 0; i--)
+    {
+        if (aoPlayerTreasuresCopy[i].nLevel === 9)
+            aoPlayerTreasuresCopy.splice(i, 1);
+    }
+
+    // next, calculate profit margin to next level
+    aoPlayerTreasuresCopy.forEach(function (oTreasure) {
+        var nCurrentCrystalsPerDay = oTreasure.nAverageCrystalsPerDay;
+        //console.log(nCurrentCrystalsPerDay);
+        var nCrystalsPerDayAfterUpgrade = oTreasure.nCrystals * oApp.fnFindTreasureByName(oTreasure.sTreasureName).chance[oTreasure.nLevel + 1] / 100;
+        oTreasure.nCrystalsPerDayAfterUpgrade = nCrystalsPerDayAfterUpgrade;
+        //console.log(nCrystalsPerDayAfterUpgrade);
+    });
+    aoPlayerTreasuresCopy.sort(oApp.fnKeySrt("nCrystalsPerDayAfterUpgrade", true));
+    //console.log(aoPlayerTreasuresCopy);
+
+    // generate upgrades table
+    $("#upgradePathTable tbody").empty();
+    for (var i = 0; i < nHowMany && i < aoPlayerTreasuresCopy.length; i++)
+    {
+        var oTreasure = aoPlayerTreasuresCopy[i];
+        oApp.fnGenerateUpgradeTableRow(oTreasure.sTreasureName, oTreasure.nLevel, oTreasure.nAverageCrystalsPerDay, oTreasure.nCrystalsPerDayAfterUpgrade);
+    }
+};
+
+// sort on key values
+oApp.fnKeySrt = function (key, desc) {
+    return function (a, b) {
+        return desc ? ~~(a[key] < b[key]) : ~~(a[key] > b[key]);
+    };
+};
+
+
+oApp.fnGenerateUpgradeTableRow = function (sTreasureName, nCurrentLevel, nAverageCrystalsPerDay, nCrystalsPerDayAfterUpgrade)
+{
+    var eTr = $("<tr class='treasureRow'></tr>");
+
+    var eIconTd = $("<td></td>");
+    var sImgSrc = oApp.getImgSrc(sTreasureName);
+    var eImg = $("<img src='" + sImgSrc + "'/>");
+    eIconTd.append(eImg);
+    eTr.append(eIconTd);
+
+    eTr.append("<td>" + sTreasureName + "</td>");
+    eTr.append(sprintf("<td>+%d &rarr; +%d</td>", nCurrentLevel, nCurrentLevel + 1));
+    eTr.append(sprintf("<td>%f &rarr; %f</td>", Math.round(nAverageCrystalsPerDay * 100) / 100, Math.round(nCrystalsPerDayAfterUpgrade * 100) / 100));
+
+    $("#upgradePathTable").append(eTr);
 };
 
 

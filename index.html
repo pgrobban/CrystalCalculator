@@ -100,7 +100,7 @@
 
             </div>
         </div>
-        
+
         <div class="panel panel-primary">
             <div class="panel-heading">
                 <h3 class="panel-title">Treasures obtained by events</h3>
@@ -182,21 +182,40 @@
             </div>
         </div>
 
-        <table id="resultsTable">
-            <caption>Results</caption>
-            <tr>
-                <th></th>
-                <th class='results'></th>
-            <tr>
-                <td>Maximum possible Crystals per day:</td>
-                <td id="maxCrystals">0</td>
-            </tr>
-            <tr>
-                <td>Expected average Crystals per day:</td>
-                <td id="avgCrystals">0</td>
-            </tr>
-        </table>
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                <h3 class="panel-title">Results</h3>
+            </div>
+            <div class="panel-body">
 
+                <table id="resultsTable">
+                    <tr>
+                        <th></th>
+                        <th class='results'></th>
+                    <tr>
+                        <td>Maximum possible Crystals per day:</td>
+                        <td id="maxCrystals">0</td>
+                    </tr>
+                    <tr>
+                        <td>Expected average Crystals per day:</td>
+                        <td id="avgCrystals">0</td>
+                    </tr>
+                </table>
+
+                <table id="upgradePathTable">
+                    <caption>Top 5 recommended upgrades</caption>
+                    <thead>
+                        <tr>
+                            <th class="treasureIconColumn"></th>
+                            <th class="treasureColumn">Name</th>
+                            <th class="treasureColumn">Level</th>
+                            <th class="treasureColumn">Average Crystals per day</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
 
     </body>
 </html>

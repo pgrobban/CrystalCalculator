@@ -1,69 +1,69 @@
 {
     "cookieTreasures": {
         "Prophet Cookie's Majestic Beard": {
-            "crystalsPerDay": 2,
+            "crystals": 2,
             "chance": [7, 10, 12, 15, 17, 20, 22, 25, 28, 30]
         }
     },
     "petTreasures": {
         "Snow Globe's Crystal Crown": {
-            "crystalsPerDay": 1,
+            "crystals": 1,
             "chance": [15, 20, 25, 30, 35, 40, 45, 50, 55, 60]
         },
         "King Choco Drop's Jelly Crown": {
-            "crystalsPerDay": 1,
+            "crystals": 1,
             "chance": [15, 20, 25, 30, 35, 40, 45, 50, 55, 60]
         }
     },
     "levelTreasures": {
         "Lv.50 Golden Club Trophy": {
-            "crystalsPerDay": 2,
+            "crystals": 2,
             "chance": [20, 23, 26, 29, 32, 35, 38, 41, 44, 50]
         },
         "Lv.60 Legends Club Trophy": {
-            "crystalsPerDay": 3,
+            "crystals": 3,
             "chance": [20, 23, 26, 29, 32, 35, 38, 41, 44, 50]
         },
         "Lv.70 Club Trophy": {
-            "crystalsPerDay": 5,
+            "crystals": 5,
             "chance": [10, 12, 14, 16, 18, 20, 22, 24, 26, 30]
         }
     },
     "certificateTreasures": {
         "Cookie Run: 100M Points Certificate": {
-            "crystalsPerDay": 1,
+            "crystals": 1,
             "chance": [60, 61, 62, 63, 64, 65, 66, 67, 68, 70]
         }
     },
     "eventTreasures": {
         "Commemorative 4 Layer Cake": {
-            "crystalsPerDay" : 4,
+            "crystals" : 4,
             "chance" : [5, 7, 9, 11, 13, 16, 17, 18, 19, 20]
         }
     },
     "chestTreasures" : {
         "Big Crystal Ore" : {
-            "crystalsPerDay" : 5,
+            "crystals" : 5,
             "chance" : [2, 4, 6, 8, 10, 12, 14, 16, 18, 21]
         },
         "Rare Sapphire Brooch" : {
-            "crystalsPerDay" : 2,
+            "crystals" : 2,
             "chance" : [5, 10, 15, 20, 25, 30, 35, 40, 45, 50]
         },
         "Translucent Crystal Alarm Clock" : {
-            "crystalsPerDay" : 12,
+            "crystals" : 12,
             "chance" : [1,2,3,4,5,6,7,8,9,10]
         },
         "Crystal Pearl Earring" : {
-            "crystalsPerDay" : 1,
+            "crystals" : 1,
             "chance" : [5, 10, 15, 20, 25, 30, 35, 40, 45, 50]
         },
         "Giant Crystal Ring" : {
-            "crystalsPerDay" : 4,
+            "crystals" : 4,
             "chance" : [4,6,8,10,12,15,18,21,24,27]
         },
         "Rare Crystal Clam" : {
-            "crystalsPerDay" : 10,
+            "crystals" : 10,
             "chance" : [1,2,3,4,5,6,7,8,9,11]
         }
     }
