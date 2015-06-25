@@ -58,16 +58,22 @@
         }
     },
     "chestTreasures": {
-        "Big Crystal Ore": {
-            "crystals": 5,
-            "chance": [
-                2, 4, 6, 8, 10, 12, 14, 16, 18, 21
-            ]
-        },
         "Rare Sapphire Brooch": {
             "crystals": 2,
             "chance": [
                 5, 10, 15, 20, 25, 30, 35, 40, 45, 50
+            ]
+        },
+        "Rare Crystal Clam": {
+            "crystals": 10,
+            "chance": [
+                1, 2, 3, 4, 5, 6, 7, 8, 9, 11
+            ]
+        },
+        "Big Crystal Ore": {
+            "crystals": 5,
+            "chance": [
+                2, 4, 6, 8, 10, 12, 14, 16, 18, 21
             ]
         },
         "Translucent Crystal Alarm Clock": {
@@ -76,22 +82,16 @@
                 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
             ]
         },
-        "Crystal Pearl Earring": {
-            "crystals": 1,
-            "chance": [
-                5, 10, 15, 20, 25, 30, 35, 40, 45, 50
-            ]
-        },
         "Giant Crystal Ring": {
             "crystals": 4,
             "chance": [
                 4, 6, 8, 10, 12, 15, 18, 21, 24, 27
             ]
         },
-        "Rare Crystal Clam": {
-            "crystals": 10,
+        "Crystal Pearl Earring": {
+            "crystals": 1,
             "chance": [
-                1, 2, 3, 4, 5, 6, 7, 8, 9, 11
+                5, 10, 15, 20, 25, 30, 35, 40, 45, 50
             ]
         }
     }
