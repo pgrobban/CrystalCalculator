@@ -189,7 +189,7 @@ oApp.fnGenerateChestTreasuresTable = function ()
     // generate table row
     $("#chestTreasureSelect").on("change", function () {
         oApp.fnGenerateTreasureRow("chestTreasuresTable", $("#chestTreasureSelect").val(), true);
-        $("#chestTreasureSelect").val("-1"); // reset the selection
+        $("#chestTreasureSelect").val("-1"); // reset the selection - currently doesn't work in Chrome for iOS
         $("#chestTreasuresTable tbody select").on("change", oApp.fnRecalculate); // shouldn't be necessary but for some reason...
     });
 };
