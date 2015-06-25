@@ -295,10 +295,17 @@ oApp.fnDecideNBestTreasuresForPlayerToUpgrade = function (nHowMany)
 
     // generate upgrades table
     $("#upgradePathTable tbody").empty();
-    for (var i = 0; i < nHowMany && i < aoPlayerTreasuresCopy.length; i++)
+
+
+    if (aoPlayerTreasuresCopy.length === 0)
+        $("#upgradePathTable tbody").append("<td colspan=4>Nothing to upgrade</td>");
+    else
     {
-        var oTreasure = aoPlayerTreasuresCopy[i];
-        oApp.fnGenerateUpgradeTableRow(oTreasure.sTreasureName, oTreasure.nLevel, oTreasure.nAverageCrystalsPerDay, oTreasure.nCrystalsPerDayAfterUpgrade);
+        for (var i = 0; i < nHowMany && i < aoPlayerTreasuresCopy.length; i++)
+        {
+            var oTreasure = aoPlayerTreasuresCopy[i];
+            oApp.fnGenerateUpgradeTableRow(oTreasure.sTreasureName, oTreasure.nLevel, oTreasure.nAverageCrystalsPerDay, oTreasure.nCrystalsPerDayAfterUpgrade);
+        }
     }
 };
 
