@@ -3,6 +3,7 @@
     Author     : pgrobban
 */
 
+
 body {
     margin: 0 auto;
     font-size: 14px;
@@ -103,5 +104,5 @@ tr {
 }
 
 .results {
-    width: 100px;
+    width: 50%;
 }

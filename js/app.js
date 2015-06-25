@@ -3,7 +3,6 @@
 /*
  * Crystal revenue calculator for Cookie Run.
  * Code by Robert Sebescen aka pgrobban
- * Thanks to @Kevsuc in the Cookie Run Wiki for inspiration :)
  */
 
 /*
