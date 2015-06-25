@@ -289,7 +289,7 @@ oApp.fnDecideNBestTreasuresForPlayerToUpgrade = function (nHowMany)
         oTreasure.nCrystalsPerDayAfterUpgrade = nCrystalsPerDayAfterUpgrade;
         //console.log(nCrystalsPerDayAfterUpgrade);
     });
-    aoPlayerTreasuresCopy.sort(oApp.fnKeySrt("nCrystalsPerDayAfterUpgrade", true));
+    aoPlayerTreasuresCopy.sort(oApp.fnUpgradeSort);
     //console.log(aoPlayerTreasuresCopy);
 
     // generate upgrades table
@@ -308,11 +308,14 @@ oApp.fnDecideNBestTreasuresForPlayerToUpgrade = function (nHowMany)
     }
 };
 
-// sort on key values
-oApp.fnKeySrt = function (key, desc) {
-    return function (a, b) {
-        return desc ? ~~(a[key] < b[key]) : ~~(a[key] > b[key]);
-    };
+oApp.fnUpgradeSort = function (a, b) {
+    // can't do oneliner thanks to IE. http://www.zachleat.com/web/array-sort/
+    
+    var x = a["nCrystalsPerDayAfterUpgrade"];
+    var y = b["nCrystalsPerDayAfterUpgrade"];
+    if(x < y) return 1;
+    if(x > y) return -1;
+    return 0;
 };
 
 
