@@ -25,13 +25,20 @@ $(document).ready(function () {
     oApp.oData = null;
     oApp.aoPlayerTreasures = null;
 
+    $("body").on("change", "select", oApp.fnRecalculate);
+    $("#certificateSelect").on("change", function () {
+        $("#certificateTreasureTable tbody").empty();
+        if ($("#certificateSelect").val() !== "-1")
+            oApp.fnGenerateTreasureRow("certificateTreasureTable", $("#certificateSelect").val());
+    });
+
     // fetch the data from the JSON file. When finished, start generating tables. 
     $.ajax({
         url: "data/treasuredata.json",
         success: function (oData) {
             oApp.oData = oData;
             oApp.fnGenerateTreasureTables();
-            $("select").on("change", oApp.fnRecalculate);
+            oApp.fnGetLocalStorageData();
         },
         error: function () {
             alert("Error: Couldn't load treasure data or something went wrong when parsing the file.");
@@ -83,7 +90,7 @@ oApp.fnGenerateTreasureTable = function (sTableID, aTreasures) {
  * @returns {undefined}
  */
 oApp.fnGenerateTreasureRow = function (sTableID, sTreasureName, bGenerateDeleteButton) {
-    var eTr = $("<tr class='treasureRow'></tr>");
+    var eTr = $('<tr class="treasureRow" data-treasure-name="' + sTreasureName + '"></tr>');
 
     // Generate img src attribute. ugh, ugly. we have to escape apostrophes and we can't use colons for file names, so I replaced them with a dash
     var sImgSrc = oApp.getImgSrc(sTreasureName);
@@ -165,13 +172,7 @@ oApp.fnGenerateCertificatesTable = function () {
     });
     // 100M is in the data file. special because it's +2% chance from 90M, although we could generate it here as well
 
-    // when the user has selected a certificate treasure, generate a table row in the certificateTreasureTable table
-    $("#certificateSelect").on('change', function () {
-        $("#certificateTreasureTable tbody").empty();
-        if ($("#certificateSelect").val() !== "-1")
-            oApp.fnGenerateTreasureRow("certificateTreasureTable", $("#certificateSelect").val());
-        $("#certificateTreasureTable tbody select").on("change", oApp.fnRecalculate); // shouldn't be necessary but for some reason...
-    });
+
 };
 
 /**
@@ -219,6 +220,8 @@ oApp.fnRecalculate = function () {
 
     $("#maxCrystals").text(nMaxCrystals);
     $("#avgCrystals").text(Math.round(nAvgCrystalsPerDay * 100) / 100);
+
+    oApp.fnSaveLocalData();
 
     oApp.fnMakePlayerTreasureDB();
     oApp.fnDecideNBestTreasuresForPlayerToUpgrade(5);
@@ -310,11 +313,13 @@ oApp.fnDecideNBestTreasuresForPlayerToUpgrade = function (nHowMany)
 
 oApp.fnUpgradeSort = function (a, b) {
     // can't do oneliner thanks to IE. http://www.zachleat.com/web/array-sort/
-    
+
     var x = a["nCrystalsPerDayAfterUpgrade"];
     var y = b["nCrystalsPerDayAfterUpgrade"];
-    if(x < y) return 1;
-    if(x > y) return -1;
+    if (x < y)
+        return 1;
+    if (x > y)
+        return -1;
     return 0;
 };
 
@@ -334,6 +339,80 @@ oApp.fnGenerateUpgradeTableRow = function (sTreasureName, nCurrentLevel, nAverag
     eTr.append(sprintf("<td>%f &rarr; %f</td>", Math.round(nAverageCrystalsPerDay * 100) / 100, Math.round(nCrystalsPerDayAfterUpgrade * 100) / 100));
 
     $("#upgradePathTable").append(eTr);
+};
+
+// get saved data
+
+oApp.fnGetLocalStorageData = function () {
+    if (typeof localStorage === 'undefined') {
+        alert("Your browser does not support local storage. This means that you can still use the app, but your data will not be saved after you close the browser.");
+        return;
+    }
+
+    // $('tr[data-treasure-name="Prophet Cookie\'s Majestic Beard"] select').val("3");
+
+
+    if (typeof localStorage.oPlayerUniqueTreasures === 'undefined') {
+        return;
+    }
+
+    Object.keys(JSON.parse(localStorage.oPlayerUniqueTreasures)).forEach(function (sTreasureName) {
+        //console.log(sTreasureName);
+        var iTreasureLevel = JSON.parse(localStorage.oPlayerUniqueTreasures)[sTreasureName];
+        $('tr[data-treasure-name="' + sTreasureName + '"] select').val(iTreasureLevel);
+    });
+
+    var oPlayerCertificateTreasure = JSON.parse(localStorage.oPlayerCertificateTreasure);
+    console.log(oPlayerCertificateTreasure);
+    if (!jQuery.isEmptyObject(oPlayerCertificateTreasure)) {
+        $("#certificateSelect").val(oPlayerCertificateTreasure["name"]);
+        oApp.fnGenerateTreasureRow("certificateTreasureTable", oPlayerCertificateTreasure["name"]);
+        $("#certificateTreasureTable select").val(oPlayerCertificateTreasure["level"]);
+    }
+
+    var aoPlayerChestTreasures = JSON.parse(localStorage.aoPlayerChestTreasures);
+
+    aoPlayerChestTreasures.forEach(function (oElement, index) {
+        oApp.fnGenerateTreasureRow("chestTreasuresTable", oElement["name"], true);
+        $("#chestTreasuresTable select").eq(index).val(oElement["level"]);
+    });
+
+    oApp.fnRecalculate();
+};
+
+oApp.fnSaveLocalData = function () {
+    if (typeof localStorage === "undefined")
+        return;
+
+    var oPlayerUniqueTreasures = {};
+    $("#cookieTreasuresTable tr, #petTreasuresTable tr, #levelTreasuresTable tr, #eventTreasuresTable tr").each(function (index, val) {
+        //console.log($(val).data("treasure-name"));
+        oPlayerUniqueTreasures[$(val).data("treasure-name")] = $(val).find("select").val();
+    });
+
+    localStorage.oPlayerUniqueTreasures = JSON.stringify(oPlayerUniqueTreasures);
+
+    var oPlayerCertificateTreasure = {};
+    if ($("#certificateTreasureTable tbody tr"))
+    {
+        var tr = $("#certificateTreasureTable tbody tr");
+        oPlayerCertificateTreasure["name"] = tr.data("treasure-name");
+        oPlayerCertificateTreasure["level"] = tr.find("select").val();
+    }
+
+    localStorage.oPlayerCertificateTreasure = JSON.stringify(oPlayerCertificateTreasure);
+
+    var aoPlayerChestTreasures = [];
+    $("#chestTreasuresTable tbody tr").each(function (val) {
+        var oTreasureToAdd = {};
+        oTreasureToAdd["name"] = $(this).data("treasure-name");
+        oTreasureToAdd["level"] = $(this).find("select").val();
+        aoPlayerChestTreasures.push(oTreasureToAdd);
+    });
+
+    localStorage.aoPlayerChestTreasures = JSON.stringify(aoPlayerChestTreasures);
+    console.log(JSON.parse(localStorage.aoPlayerChestTreasures));
+
 };
 
 
