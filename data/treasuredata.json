@@ -55,6 +55,12 @@
             "chance": [
                 5, 7, 9, 11, 13, 16, 17, 18, 19, 20
             ]
+        },
+        "Strangely Familiar Blue Necklace": {
+            "crystals": 1,
+            "chance": [
+                5, 10, 15, 20, 25, 30, 35, 40, 45, 50
+            ]
         }
     },
     "chestTreasures": {
